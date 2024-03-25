@@ -40,4 +40,4 @@ def try_passwords(start_range, end_range):
             counter += 1
 
 # Aufrufen der Funktion für den zugewiesenen Passwortbereich
-try_passwords(0, 10000)
+try_passwords(1570, 10000)
