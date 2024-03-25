@@ -17,6 +17,15 @@ def check_password(password):
     result = subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     return result.returncode, result.stderr.decode()
 
+# Funktion zum Überprüfen der Passwörter in einem Chunk
+def process_chunk(password_chunk):
+    for password in password_chunk:
+        return_code, error_message = check_password(password)
+        if return_code == 0:
+            print(f"Erfolgreich angemeldet als '{username}' mit dem Passwort '{password}'")
+            return password
+    return None
+
 # Hauptfunktion
 def main():
     # Liste aller Passwörter
@@ -31,15 +40,6 @@ def main():
     # Teilen Sie die Passwörter in Unterlisten auf, um von mehreren Prozessen verarbeitet zu werden
     chunk_size = total_passwords // num_processes
     password_chunks = [passwords[i:i+chunk_size] for i in range(0, total_passwords, chunk_size)]
-
-    # Funktion zum Überprüfen der Passwörter in einem Chunk
-    def process_chunk(password_chunk):
-        for password in password_chunk:
-            return_code, error_message = check_password(password)
-            if return_code == 0:
-                print(f"Erfolgreich angemeldet als '{username}' mit dem Passwort '{password}'")
-                return password
-        return None
 
     # Verwenden Sie einen Prozesspool, um mehrere Prozesse parallel auszuführen
     with ProcessPoolExecutor(max_workers=num_processes) as executor:
