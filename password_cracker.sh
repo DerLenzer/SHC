@@ -7,7 +7,7 @@ password_list_path="./10k-most-common.txt"
 username="anna"
 
 # Anzahl der Prozesse, die gleichzeitig gestartet werden sollen
-num_processes=4
+num_processes=2
 
 # Funktion, um Passwörter zu testen
 check_password() {
