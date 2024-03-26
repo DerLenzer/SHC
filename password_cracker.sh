@@ -18,12 +18,17 @@ check_password() {
     fi
 }
 
-# Starte zwei gleichzeitige Subprozesse, um Passwörter zu testen
-while IFS= read -r password1 && IFS= read -r password2; do
-    check_password "$password1" &
-    check_password "$password2" &
-    wait
+# Starte die Überprüfung der Passwörter
+while IFS= read -r password; do
+    check_password "$password" &
+    # Begrenze die Anzahl der gleichzeitigen Subprozesse auf 10
+    if [ $(jobs | wc -l) -ge 10 ]; then
+        wait -n || true
+    fi
 done < "$password_list_path"
+
+# Warte auf die Beendigung aller laufenden Subprozesse
+wait
 
 # Wenn kein gültiges Passwort gefunden wurde
 echo "Kein gültiges Passwort für '$username' gefunden."
