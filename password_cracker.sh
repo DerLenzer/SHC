@@ -29,6 +29,7 @@ check_password() {
 # Überprüfen Sie jedes Passwort in der Liste
 while IFS= read -r password; do
     check_password "$password" &
+    sleep 0.5  # 0,5 Sekunden Verzögerung zwischen den Versuchen
 done < "$password_list"
 
 wait
