@@ -4,7 +4,7 @@
 server="server1.challenge-883ad57c-80e2-4f8f-92f4-e8c19d747341.svc.cluster.local"
 
 # Benutzername
-username="sshuser"
+username="anna"
 
 # Datei mit den 10.000 häufigsten Passwörtern
 password_list="./10k-most-common.txt"
