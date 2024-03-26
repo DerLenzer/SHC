@@ -16,6 +16,8 @@ check_password() {
     if [ $? -eq 0 ]; then
         echo "Erfolgreich angemeldet als '$username' mit dem Passwort '$password'"
         exit 0
+    else
+        echo "Passwort '$password' war erfolglos."
     fi
 }
 
